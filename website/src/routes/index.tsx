@@ -147,7 +147,7 @@ function DemoVideo() {
       className="relative mt-10 block aspect-video w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-background shadow-xl"
     >
       <iframe
-        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        src="https://www.youtube.com/embed/CK8dKBeBTic"
         title="Sensus demo"
         className="absolute inset-0 h-full w-full"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
