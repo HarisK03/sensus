@@ -21,3 +21,10 @@ build/
 .ruff_cache/
 .DS_Store
 Thumbs.db
+
+# Frontend (website/)
+node_modules/
+.output/
+.vinxi/
+.tanstack/
+.nitro/
