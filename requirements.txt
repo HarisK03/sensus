@@ -1,0 +1,15 @@
+# Phase 1 core voice — Ubuntu 22.04/24.04
+# System: sudo apt install portaudio19-dev python3-pyaudio (or pip pyaudio after dev libs)
+pyaudio>=0.2.14
+webrtcvad>=2.0.10
+ibm-watson>=8.0.0
+ibm-cloud-sdk-core>=3.18.0
+openai>=1.40.0
+python-dotenv>=1.0.0
+setuptools<=81.0.0
+playwright>=1.40.0
+Pillow>=10.0.0
+# GTK overlay (--gui on Linux): pip install PyGObject needs apt libgirepository-2.0-dev (+ meson).
+PyGObject>=3.42.2; sys_platform == "linux"
+# IBM Db2 (sessions/messages) — also install IBM Data Server Driver / clidriver; see storage/db2.py
+ibm-db>=3.2.0

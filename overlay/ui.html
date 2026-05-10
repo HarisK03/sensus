@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Sensus</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			/* Theme tokens — same oklch palette as your Tailwind config (plain CSS, no build). */
+			html.dark {
+				--background: oklch(0.2178 0 0);
+				--foreground: oklch(0.8853 0 0);
+				--card: oklch(0.2435 0 0);
+				--card-foreground: oklch(0.8853 0 0);
+				--popover: oklch(0.2435 0 0);
+				--popover-foreground: oklch(0.8853 0 0);
+				--primary: oklch(0.7058 0 0);
+				--primary-foreground: oklch(0.2178 0 0);
+				--secondary: oklch(0.3092 0 0);
+				--secondary-foreground: oklch(0.8853 0 0);
+				--muted: oklch(0.285 0 0);
+				--muted-foreground: oklch(0.5999 0 0);
+				--accent: oklch(0.3715 0 0);
+				--accent-foreground: oklch(0.8853 0 0);
+				--destructive: oklch(0.6591 0.153 22.1703);
+				--destructive-foreground: oklch(1 0 0);
+				--border: oklch(0.329 0 0);
+				--input: oklch(0.3092 0 0);
+				--ring: oklch(0.7058 0 0);
+				--chart-1: oklch(0.7058 0 0);
+				--chart-2: oklch(0.6714 0.0339 206.3482);
+				--chart-3: oklch(0.5452 0 0);
+				--chart-4: oklch(0.4604 0 0);
+				--chart-5: oklch(0.3715 0 0);
+				--sidebar: oklch(0.2393 0 0);
+				--sidebar-foreground: oklch(0.8853 0 0);
+				--sidebar-primary: oklch(0.7058 0 0);
+				--sidebar-primary-foreground: oklch(0.2178 0 0);
+				--sidebar-accent: oklch(0.3715 0 0);
+				--sidebar-accent-foreground: oklch(0.8853 0 0);
+				--sidebar-border: oklch(0.329 0 0);
+				--sidebar-ring: oklch(0.7058 0 0);
+				--font-sans:
+					"Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+				--font-serif: Georgia, serif;
+				--font-mono: "Fira Code", ui-monospace, monospace;
+				--radius: 0.35rem;
+				--radius-sm: calc(var(--radius) - 4px);
+				--radius-md: calc(var(--radius) - 2px);
+				--radius-lg: var(--radius);
+				--radius-xl: calc(var(--radius) + 4px);
+				--shadow-2xs: 0px 2px 0px 0px hsl(0 0% 20% / 0.07);
+				--shadow-xs: 0px 2px 0px 0px hsl(0 0% 20% / 0.07);
+				--shadow-sm:
+					0px 2px 0px 0px hsl(0 0% 20% / 0.15),
+					0px 1px 2px -1px hsl(0 0% 20% / 0.15);
+				--shadow:
+					0px 2px 0px 0px hsl(0 0% 20% / 0.15),
+					0px 1px 2px -1px hsl(0 0% 20% / 0.15);
+				--shadow-md:
+					0px 2px 0px 0px hsl(0 0% 20% / 0.15),
+					0px 2px 4px -1px hsl(0 0% 20% / 0.15);
+				--shadow-lg:
+					0px 2px 0px 0px hsl(0 0% 20% / 0.15),
+					0px 4px 6px -1px hsl(0 0% 20% / 0.15);
+				--shadow-xl:
+					0px 2px 0px 0px hsl(0 0% 20% / 0.15),
+					0px 8px 10px -1px hsl(0 0% 20% / 0.15);
+				--shadow-2xl: 0px 2px 0px 0px hsl(0 0% 20% / 0.38);
+			}
+
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+			}
+
+			html,
+			body {
+				height: 100%;
+				margin: 0;
+			}
+
+			body {
+				font-family: var(--font-sans);
+				font-size: 14px;
+				font-weight: 400;
+				letter-spacing: var(--tracking-normal, 0em);
+				-webkit-font-smoothing: antialiased;
+				background: var(--background);
+				color: var(--foreground);
+				display: flex;
+				flex-direction: row;
+				overflow: hidden;
+			}
+
+			/* Sessions rail */
+			#sidebar {
+				width: 168px;
+				flex: 0 0 168px;
+				min-height: 0;
+				background: var(--sidebar);
+				color: var(--sidebar-foreground);
+				border-right: 1px solid var(--sidebar-border);
+				display: flex;
+				flex-direction: column;
+				padding: 14px 12px 16px;
+				gap: 12px;
+				overflow: hidden;
+				box-shadow: inset -1px 0 0 oklch(1 0 0 / 0.03);
+			}
+
+			.sidebar-label {
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--muted-foreground);
+				margin: 0;
+				padding: 0 2px;
+			}
+
+			#session-history {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				min-height: 0;
+				overflow-y: auto;
+				overflow-x: hidden;
+				padding-right: 2px;
+				scrollbar-width: thin;
+				scrollbar-color: var(--sidebar-border) transparent;
+			}
+
+			#session-history::-webkit-scrollbar {
+				width: 5px;
+			}
+			#session-history::-webkit-scrollbar-thumb {
+				background: var(--sidebar-border);
+				border-radius: 99px;
+			}
+
+			#session-history .session-pill {
+				padding: 9px 10px;
+				border-radius: var(--radius-lg);
+				font-size: 11px;
+				font-weight: 500;
+				line-height: 1.35;
+				word-break: break-word;
+				cursor: pointer;
+				background: oklch(1 0 0 / 0.03);
+				border: 1px solid var(--sidebar-border);
+				color: var(--sidebar-foreground);
+				box-shadow: var(--shadow-2xs);
+				transition:
+					border-color 0.15s ease,
+					background 0.15s ease,
+					box-shadow 0.15s ease;
+			}
+
+			#session-history .session-pill:hover {
+				background: oklch(1 0 0 / 0.06);
+				border-color: oklch(1 0 0 / 0.08);
+			}
+
+			#session-history .session-pill.current {
+				border-color: var(--sidebar-ring);
+				background: var(--sidebar-accent);
+				color: var(--sidebar-accent-foreground);
+				box-shadow:
+					var(--shadow-sm),
+					0 0 0 1px oklch(1 0 0 / 0.06) inset;
+			}
+
+			#session-history .session-pill.viewing:not(.current) {
+				outline: 1px solid oklch(0.7058 0 0 / 0.45);
+				outline-offset: 1px;
+			}
+
+			.history-banner {
+				font-size: 11px;
+				font-weight: 500;
+				line-height: 1.4;
+				padding: 8px 16px;
+				border-bottom: 1px solid var(--border);
+				background: oklch(0.3715 0 0 / 0.35);
+				color: var(--muted-foreground);
+			}
+
+			.history-banner:empty,
+			.history-banner.hidden {
+				display: none;
+			}
+
+			/* Main panel — elevated card */
+			#main {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				min-width: 0;
+				margin: 12px 12px 12px 0;
+				border-radius: var(--radius-xl);
+				overflow: hidden;
+				background: var(--card);
+				color: var(--card-foreground);
+				border: 1px solid var(--border);
+				box-shadow:
+					var(--shadow-xl),
+					0 0 0 1px oklch(1 0 0 / 0.04) inset;
+			}
+
+			.main-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 12px 16px 10px;
+				border-bottom: 1px solid var(--border);
+				background: linear-gradient(
+					180deg,
+					oklch(1 0 0 / 0.04) 0%,
+					transparent 100%
+				);
+			}
+
+			.main-header h1 {
+				margin: 0;
+				font-size: 15px;
+				font-weight: 600;
+				letter-spacing: -0.02em;
+				color: var(--foreground);
+			}
+
+			.main-header span {
+				font-size: 11px;
+				font-weight: 500;
+				color: var(--muted-foreground);
+			}
+
+			#wave-wrap {
+				padding: 14px 18px 10px;
+				border-bottom: 1px solid oklch(1 0 0 / 0.05);
+			}
+
+			#wave {
+				height: 56px;
+				display: flex;
+				align-items: flex-end;
+				justify-content: center;
+				gap: 4px;
+			}
+
+			#wave .bar {
+				width: 5px;
+				border-radius: 99px;
+				background: var(--muted);
+				min-height: 5px;
+				transition:
+					height 0.07s linear,
+					opacity 0.15s ease,
+					filter 0.15s ease;
+				opacity: 0.55;
+			}
+
+			#wave.speaking .bar {
+				opacity: 1;
+				background: linear-gradient(
+					to top,
+					var(--chart-2),
+					var(--chart-1)
+				);
+				box-shadow: 0 0 12px oklch(0.7058 0 0 / 0.25);
+			}
+
+			#wave.idle .bar {
+				height: 5px !important;
+				opacity: 0.45;
+				box-shadow: none;
+			}
+
+			#interim {
+				font-size: 12px;
+				font-weight: 400;
+				font-style: italic;
+				color: var(--muted-foreground);
+				min-height: 1.35em;
+				padding: 0 18px 10px;
+				letter-spacing: 0.01em;
+			}
+
+			#chat {
+				flex: 1;
+				overflow-y: auto;
+				overflow-x: hidden;
+				padding: 14px 16px 16px;
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+				scrollbar-width: thin;
+				scrollbar-color: var(--border) transparent;
+			}
+
+			#chat::-webkit-scrollbar {
+				width: 6px;
+			}
+			#chat::-webkit-scrollbar-thumb {
+				background: var(--border);
+				border-radius: 99px;
+			}
+
+			.bubble {
+				max-width: 92%;
+				padding: 11px 14px;
+				border-radius: var(--radius-xl);
+				font-size: 13.5px;
+				line-height: 1.5;
+				font-weight: 400;
+				word-break: break-word;
+				letter-spacing: 0.01em;
+				border: 1px solid transparent;
+				box-shadow: var(--shadow-xs);
+			}
+
+			.bubble.user {
+				align-self: flex-end;
+				background: linear-gradient(
+					145deg,
+					oklch(0.42 0.08 250),
+					oklch(0.36 0.06 260)
+				);
+				color: oklch(0.97 0.01 250);
+				border-color: oklch(1 0 0 / 0.12);
+			}
+
+			.bubble.asst {
+				align-self: flex-start;
+				background: var(--secondary);
+				color: var(--secondary-foreground);
+				border-color: var(--border);
+			}
+
+			#input-row {
+				padding: 12px 14px 14px;
+				border-top: 1px solid var(--border);
+				background: oklch(0 0 0 / 0.15);
+			}
+
+			#msg {
+				width: 100%;
+				resize: none;
+				border-radius: var(--radius-lg);
+				border: 1px solid var(--border);
+				background: var(--input);
+				color: var(--foreground);
+				padding: 11px 14px;
+				font-family: inherit;
+				font-size: 13px;
+				font-weight: 400;
+				max-height: 88px;
+				outline: none;
+				box-shadow: var(--shadow-2xs);
+				transition:
+					border-color 0.15s ease,
+					box-shadow 0.15s ease;
+			}
+
+			#msg::placeholder {
+				color: var(--muted-foreground);
+				opacity: 0.85;
+			}
+
+			#msg:focus {
+				border-color: var(--ring);
+				box-shadow:
+					var(--shadow-sm),
+					0 0 0 3px oklch(0.7058 0 0 / 0.22);
+			}
+		</style>
+	</head>
+	<body>
+		<div id="sidebar">
+			<p class="sidebar-label">Sessions</p>
+			<div id="session-history"></div>
+		</div>
+		<div id="main">
+			<header class="main-header">
+				<h1>Sensus</h1>
+				<span>Voice</span>
+			</header>
+			<div
+				id="history-banner"
+				class="history-banner hidden"
+				aria-live="polite"
+			></div>
+			<div id="wave-wrap">
+				<div id="wave" class="idle"></div>
+			</div>
+			<div id="interim"></div>
+			<div id="chat"></div>
+			<div id="input-row">
+				<textarea
+					id="msg"
+					rows="1"
+					placeholder="Speak or type your message"
+				></textarea>
+			</div>
+		</div>
+		<script>
+			const N_BARS = 16;
+			(function initBars() {
+				const w = document.getElementById("wave");
+				for (let i = 0; i < N_BARS; i++) {
+					const b = document.createElement("div");
+					b.className = "bar";
+					b.style.height = "5px";
+					w.appendChild(b);
+				}
+			})();
+
+			function postToPython(obj) {
+				try {
+					var s = typeof obj === "string" ? obj : JSON.stringify(obj);
+					if (
+						window.webkit &&
+						window.webkit.messageHandlers &&
+						window.webkit.messageHandlers.sensus
+					) {
+						window.webkit.messageHandlers.sensus.postMessage(s);
+					}
+				} catch (e) {}
+			}
+
+			var viewingChatSessionId = null;
+
+			window.sensusReceive = function (payload) {
+				var d =
+					typeof payload === "string" ? JSON.parse(payload) : payload;
+				if (!d || !d.type) return;
+				if (d.type === "wave") {
+					setWave(d.levels || [], d.mode || "idle");
+				} else if (d.type === "bubble") {
+					addBubble(d.role || "asst", d.text || "");
+				} else if (d.type === "interim") {
+					document.getElementById("interim").textContent =
+						d.text || "";
+				} else if (d.type === "sessions") {
+					renderSessions(d.items || []);
+				} else if (d.type === "chat_history") {
+					applyChatHistory(d);
+				}
+			};
+
+			function setWave(levels, mode) {
+				var w = document.getElementById("wave");
+				w.className = mode === "speaking" ? "speaking" : "idle";
+				var bars = w.querySelectorAll(".bar");
+				for (var i = 0; i < bars.length; i++) {
+					var lv = levels[i] != null ? levels[i] : 0.08;
+					var h = Math.max(5, Math.min(54, 5 + lv * 49));
+					bars[i].style.height = h + "px";
+				}
+			}
+
+			function addBubble(role, text) {
+				var chat = document.getElementById("chat");
+				var div = document.createElement("div");
+				div.className = "bubble " + (role === "user" ? "user" : "asst");
+				div.textContent = text;
+				chat.appendChild(div);
+				chat.scrollTop = chat.scrollHeight;
+			}
+
+			function setHistoryBanner(text) {
+				var el = document.getElementById("history-banner");
+				if (!el) return;
+				var t = (text || "").trim();
+				if (!t) {
+					el.textContent = "";
+					el.classList.add("hidden");
+					return;
+				}
+				el.textContent = t;
+				el.classList.remove("hidden");
+			}
+
+			function applyChatHistory(d) {
+				viewingChatSessionId = d.sessionId || null;
+				var chat = document.getElementById("chat");
+				if (chat) chat.innerHTML = "";
+				var msgs = d.messages || [];
+				for (var i = 0; i < msgs.length; i++) {
+					var m = msgs[i] || {};
+					addBubble(m.role || "asst", m.text || "");
+				}
+				var ta = document.getElementById("msg");
+				if (ta) {
+					ta.disabled = false;
+					ta.placeholder = "Speak or type your message";
+				}
+				setHistoryBanner(d.banner || "");
+				renderSessions(window.__lastSessionItems || []);
+			}
+
+			function renderSessions(items) {
+				window.__lastSessionItems = items;
+				var box = document.getElementById("session-history");
+				if (!box) return;
+				box.innerHTML = "";
+				for (var i = 0; i < items.length; i++) {
+					var it = items[i] || {};
+					var e = document.createElement("div");
+					var cls =
+						"session-pill" +
+						(it.current ? " current" : "") +
+						(viewingChatSessionId && it.id === viewingChatSessionId
+							? " viewing"
+							: "");
+					e.className = cls;
+					var title = (it.name || it.summary || "Session")
+						.replace(/\s+/g, " ")
+						.trim();
+					if (!title.length) title = "Session";
+					if (title.length > 72) title = title.slice(0, 69) + "…";
+					e.textContent = title;
+					e.title =
+						(it.created_at || "") + (it.id ? " · " + it.id : "");
+					(function (row) {
+						e.addEventListener("click", function () {
+							if (!row.id) return;
+							postToPython({
+								type: "open_session",
+								session_id: row.id,
+							});
+						});
+					})(it);
+					box.appendChild(e);
+				}
+			}
+
+			var ta = document.getElementById("msg");
+			ta.addEventListener("keydown", function (ev) {
+				if (ev.key === "Enter" && !ev.shiftKey) {
+					ev.preventDefault();
+					var v = ta.value.trim();
+					if (v) {
+						postToPython({ type: "send", text: v });
+						ta.value = "";
+						ta.style.height = "";
+					}
+				}
+			});
+			ta.addEventListener("input", function () {
+				ta.style.height = "auto";
+				ta.style.height = Math.min(88, ta.scrollHeight) + "px";
+			});
+		</script>
+	</body>
+</html>
